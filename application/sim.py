@@ -1,10 +1,10 @@
 import numpy as np
 
-from application.jes_species_info import SpeciesInfo
+from application.species_info import SpeciesInfo
 from enums import Color
 from utils import apply_muscles
-from domain.jes_creature import Creature
-from inbound_adapters.pygame_ui.jes_dataviz import draw_all_graphs
+from domain.creature import Creature
+from inbound_adapters.pygame_ui.dataviz import draw_all_graphs
 import time
 import random
 

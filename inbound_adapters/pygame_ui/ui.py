@@ -4,13 +4,13 @@ import pygame
 from pygame import Surface
 
 from enums import Color
-from domain.jes_creature import Creature
-from inbound_adapters.pygame_ui.jes_dataviz import draw_all_graphs, display_all_graphs
-from application.jes_species_info import SpeciesInfo
-from inbound_adapters.pygame_ui.jes_shapes import draw_x, center_text, draw_species_circle, draw_ring_light, align_text
-from inbound_adapters.pygame_ui.jes_slider import Slider
+from domain.creature import Creature
+from inbound_adapters.pygame_ui.dataviz import draw_all_graphs, display_all_graphs
+from application.species_info import SpeciesInfo
+from inbound_adapters.pygame_ui.shapes import draw_x, center_text, draw_species_circle, draw_ring_light, align_text
+from inbound_adapters.pygame_ui.slider import Slider
 from utils import species_to_color, species_to_name, dist_to_text, bound, get_dist, array_int_multiply
-from inbound_adapters.pygame_ui.jes_button import Button
+from inbound_adapters.pygame_ui.button import Button
 import time
 import numpy as np
 import os

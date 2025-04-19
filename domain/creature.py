@@ -3,7 +3,7 @@ from pygame import Surface
 
 from enums import Color
 from utils import array_lerp, dist_to_text, species_to_color, list_lerp, lerp
-from inbound_adapters.pygame_ui.jes_shapes import draw_rect, draw_text_rect, center_text, draw_clock
+from inbound_adapters.pygame_ui.shapes import draw_rect, draw_text_rect, center_text, draw_clock
 import numpy as np
 import math
 import random

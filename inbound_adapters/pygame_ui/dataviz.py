@@ -1,7 +1,7 @@
 import numpy as np
 
 from enums import Color
-from inbound_adapters.pygame_ui.jes_shapes import right_text, draw_species_circle, align_text
+from inbound_adapters.pygame_ui.shapes import right_text, draw_species_circle, align_text
 from utils import get_unit, dist_to_text, species_to_name, species_to_color
 import math
 import pygame

@@ -3,7 +3,7 @@ from typing import Callable
 import pygame
 import time
 
-from inbound_adapters.pygame_ui.jes_shapes import center_text
+from inbound_adapters.pygame_ui.shapes import center_text
 
 
 class Button:
