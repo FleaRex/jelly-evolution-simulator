@@ -17,16 +17,16 @@ class Button:
     def draw_button(self, screen, font) -> None:
         x, y, w, h = self.dim
         name = self.names[self.setting]
-        
-        slider_surface = pygame.Surface((w,h), pygame.SRCALPHA, 32)
-        slider_surface.fill((30,150,230))
+
+        slider_surface = pygame.Surface((w, h), pygame.SRCALPHA, 32)
+        slider_surface.fill((30, 150, 230))
         if name == "Turn off ALAP" or name[:4] == "Stop" or name[:4] == "Hide":
-            slider_surface.fill((128,255,255))
+            slider_surface.fill((128, 255, 255))
         center_text(slider_surface, name, w / 2, h / 2, (0, 0, 0), font)
-            
-        screen.blit(slider_surface,(x,y))
-        
+
+        screen.blit(slider_surface, (x, y))
+
     def click(self) -> None:
-        self.setting = (self.setting + 1)%len(self.names)
+        self.setting = (self.setting + 1) % len(self.names)
         self.time_of_last_click = time.time()
         self._func(self)
