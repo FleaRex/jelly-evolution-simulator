@@ -1,5 +1,5 @@
-from jes_sim import Sim
-from jes_ui import UI
+from application.jes_sim import Sim
+from inbound_adapters.pygame_ui.jes_ui import UI
 from utils import read_config
 
 sim_config_file: str = 'config/sim_config.json'
