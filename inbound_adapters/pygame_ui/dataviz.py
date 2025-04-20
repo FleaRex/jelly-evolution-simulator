@@ -14,7 +14,7 @@ import bisect
 
 # CHECK
 def draw_all_graphs(sim, ui) -> None:
-    draw_line_graph(
+    draw_percentile_graph(
         sim.percentiles, ui.graph, [70, 0, 30, 30], sim.units_per_meter, ui.small_font
     )
     draw_species_area_chart(sim.species_pops, ui.species_area_chart, [70, 0], ui)
@@ -23,8 +23,7 @@ def draw_all_graphs(sim, ui) -> None:
     )
 
 
-def draw_line_graph(data, graph, margins, u, font) -> None:
-
+def draw_percentile_graph(data, graph, margins, u, font) -> None:
     graph.fill(Color.BLACK)
     w = graph.get_width() - margins[0] - margins[1]
     h = graph.get_height() - margins[2] - margins[3]
@@ -44,7 +43,7 @@ def draw_line_graph(data, graph, margins, u, font) -> None:
         )
         tick += unit
 
-    to_show = [
+    percentiles = [
         0,
         1,
         2,
@@ -76,13 +75,13 @@ def draw_line_graph(data, graph, margins, u, font) -> None:
         100,
     ]
     data_len = len(data)
-    for g in range(data_len):
-        for p in to_show:
-            prev_val = 0 if g == 0 else data[g - 1][p]
-            next_val = data[g][p]
+    for epoch in range(data_len):
+        for p in percentiles:
+            prev_val = 0 if epoch == 0 else data[epoch - 1][p]
+            next_val = data[epoch][p]
 
-            x1 = left + (g / data_len) * w
-            x2 = left + ((g + 1) / data_len) * w
+            x1 = left + (epoch / data_len) * w
+            x2 = left + ((epoch + 1) / data_len) * w
             y1 = bottom - h * (prev_val - min_val) / (max_val - min_val)
             y2 = bottom - h * (next_val - min_val) / (max_val - min_val)
 
@@ -159,28 +158,30 @@ def trapezoid_helper(sac, data, g1, g2, i_start, i_end, x1, x2, fac, level, ui) 
         pygame.draw.polygon(sac, species_to_color(sp, ui), points)
 
 
+# TODO: Would be good to remove knowledge of level from the species, or at least make it more generic like "generation"
 def draw_gene_graph(
-    species_info, ps, gg, sim, ui, font
+    species_info, prominent_species, graph, sim, ui, font
 ) -> None:  # ps = prominent_species
     r = ui.genealogy_coor[4]
-    h = gg.get_height() - r * 2
-    w = gg.get_width() - r * 2
-    gg.fill((0, 0, 0))
+    h = graph.get_height() - r * 2
+    w = graph.get_width() - r * 2
+    graph.fill((0, 0, 0))
     if len(sim.creatures) == 0:
         return
 
-    for level in range(len(ps)):
-        for i in range(len(ps[level])):
-            s = ps[level][i]
-            x = (i + 0.5) / (len(ps[level])) * w + r
-            y = level / (len(ps) - 0.8) * h + r
+    for level in range(len(prominent_species)):
+        for i in range(len(prominent_species[level])):
+            s = prominent_species[level][i]
+            x = (i + 0.5) / (len(prominent_species[level])) * w + r
+            y = level / (len(prominent_species) - 0.8) * h + r
+            # TODO: Below line is writing to application. Probably a sign of application knowing about UI
             species_info[s].coor = (x, y)
 
-    for level in range(len(ps)):
-        for i in range(len(ps[level])):
-            s = ps[level][i]
+    for level in range(len(prominent_species)):
+        for i in range(len(prominent_species[level])):
+            s = prominent_species[level][i]
             draw_species_circle(
-                gg, s, species_info[s].coor, r, sim, species_info, font, True, ui
+                graph, s, species_info[s].coor, r, sim, species_info, font, True, ui
             )
 
 
