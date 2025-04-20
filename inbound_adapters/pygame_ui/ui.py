@@ -30,8 +30,8 @@ import os
 import random
 
 
-# CHECK
 class UI:
+    # TODO: Don't get stuff from config here
     def __init__(self, config: dict):
         self.title: str = config.get("title")
         pygame.display.set_caption(self.title)
@@ -87,6 +87,7 @@ class UI:
         self.icon_dim = ((s1, s1), (s2, s2), (s2, s2))
 
         self.mosaic_visible: bool = False
+        # TODO: Sort out this data structure. There must be a better way
         self.creature_location_highlight: list = [
             None,
             None,
@@ -97,6 +98,7 @@ class UI:
 
         self.visual_sim_memory: list = []
         self.movie_screens: list = []
+        # TODO: Is this sim ok?
         self.sim = None
 
         self.screen = pygame.display.set_mode((self.window_width, self.window_height))

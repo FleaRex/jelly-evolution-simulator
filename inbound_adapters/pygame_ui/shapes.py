@@ -10,7 +10,6 @@ import numpy as np
 import time
 
 
-# CHECK
 def draw_text_rect(surface, transform, coor, color1, color2, text, font):
     tx, ty, s = transform
     x1, y1, x2, y2 = coor
@@ -22,6 +21,7 @@ def draw_text_rect(surface, transform, coor, color1, color2, text, font):
     center_text(surface, text, text_x, text_y, color2, font)
 
 
+# This feels a bit like 2 separate functions, one with coordinates and one without
 def draw_rect(surface, transform, coor, color):
     w = surface.get_width()
     h = surface.get_height()
@@ -97,6 +97,7 @@ def align_text(the_screen, stri, x, y, color, font, align, bg_color) -> None:
     the_screen.blit(text_surface, coor)
 
 
+# Doesn't matter but this feels in the wrong file
 def draw_clock(surface, coor: tuple, the_ratio, text, font) -> None:
     grayish_color: tuple[int, int, int] = (115, 125, 160)
 
@@ -149,6 +150,7 @@ def draw_arrow(screen, _start, _end, margin, head, color) -> None:
         pygame.draw.line(screen, color, near_end, flare, width=2)
 
 
+# Doesn't matter but this feels in the wrong file
 def draw_species_circle(
     screen, s, coor, radius, sim, species_info, font, should_draw_arrow: bool, ui
 ) -> None:

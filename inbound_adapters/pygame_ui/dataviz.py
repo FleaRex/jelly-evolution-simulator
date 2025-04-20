@@ -12,7 +12,6 @@ import pygame
 import bisect
 
 
-# CHECK
 def draw_all_graphs(sim, ui) -> None:
     draw_percentile_graph(
         sim.percentiles, ui.graph, [70, 0, 30, 30], sim.units_per_meter, ui.small_font
