@@ -30,6 +30,7 @@ import os
 import random
 
 
+# CHECK
 class UI:
     def __init__(self, config: dict):
         self.title: str = config.get("title")

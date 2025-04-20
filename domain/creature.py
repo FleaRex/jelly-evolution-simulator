@@ -14,6 +14,7 @@ import math
 import random
 
 
+# CHECK
 class Creature:
     def __init__(self, d, p_id_number, parent_species, _sim, _ui) -> None:
         self.dna = d

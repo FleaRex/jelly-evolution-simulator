@@ -10,6 +10,7 @@ import numpy as np
 import time
 
 
+# CHECK
 def draw_text_rect(surface, transform, coor, color1, color2, text, font):
     tx, ty, s = transform
     x1, y1, x2, y2 = coor

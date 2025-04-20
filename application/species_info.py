@@ -2,6 +2,7 @@ import numpy as np
 import math
 
 
+# CHECK
 class SpeciesInfo:
     def __init__(self, _sim, me, ancestor) -> None:
         self.sim = _sim

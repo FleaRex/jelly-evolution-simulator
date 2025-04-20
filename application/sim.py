@@ -9,6 +9,7 @@ import time
 import random
 
 
+# CHECK
 class Sim:
     def __init__(self, creature_count: int, config: dict) -> None:
         self._creature_count: int = creature_count  # creature count

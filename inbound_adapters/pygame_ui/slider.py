@@ -3,6 +3,7 @@ from typing import Callable
 import pygame
 
 
+# CHECK
 class Slider:
     def __init__(
         self,
