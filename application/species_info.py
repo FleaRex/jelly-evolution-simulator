@@ -1,17 +1,21 @@
 import numpy as np
 import math
 
+from domain.creature import Creature
+
 
 # CHECK
 class SpeciesInfo:
-    def __init__(self, _sim, me, ancestor) -> None:
+    def __init__(self, _sim, creature: Creature, ancestor: Creature) -> None:
         self.sim = _sim
-        self.species_id = me.species
+        self.species_id = creature.species
         self.ancestor_id = None
-        self.level = 0
+        self.num_ancestor_species = 0
         if ancestor is not None:
             self.ancestor_id = ancestor.species
-            self.level = self.sim.species_info[ancestor.species].level + 1
+            self.num_ancestor_species = (
+                self.sim.species_info[ancestor.species].num_ancestor_species + 1
+            )
 
         self.apex_pop = 0
         self.reign = []
@@ -23,7 +27,8 @@ class SpeciesInfo:
         if ancestor is not None:
             self.reps[0] = ancestor.id_number
 
-        self.reps[1] = me.id_number
+        self.reps[1] = creature.id_number
+        # TODO: This smells
         self.coor = None
 
     def become_prominent(
@@ -40,10 +45,10 @@ class SpeciesInfo:
         i = self.species_id
         p = self.sim.prominent_species
         while (
-            len(p) <= self.level
+            len(p) <= self.num_ancestor_species
         ):  # this level doesn't exist yet. Add new levels of the genealogy tree to acommodate you
             p.append([])
-        p_l = p[self.level]
+        p_l = p[self.num_ancestor_species]
         insert_index = 0
         for index in range(
             len(p_l)
@@ -51,7 +56,7 @@ class SpeciesInfo:
             other = p_l[index]
             ancestor_compare = (
                 0
-                if self.level == 0
+                if self.num_ancestor_species == 0
                 else self.sim.species_info[other].ancestor_id - self.ancestor_id
             )
             if ancestor_compare == 0:  # siblings
@@ -65,6 +70,7 @@ class SpeciesInfo:
     def get_when(self, index):
         return math.floor(self.reps[index] // self.sim.creature_count)
 
+    # TODO: Why does this not use the self.sim for the fitness?
     def get_performance(self, sim, index):
         gen = math.floor(self.reps[index] // self.sim.creature_count)
         c = self.reps[index] % self.sim.creature_count
