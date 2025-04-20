@@ -8,11 +8,14 @@ ui_config_file: str = "config/ui_config.json"
 sim_config: dict = read_config(filename=sim_config_file)
 ui_config: dict = read_config(filename=ui_config_file)
 
-c_input = input(
-    "How many creatures do you want?\n100: Lightweight\n250: Standard (if you don't type anything, I'll go with this)\n500: Strenuous (this is what my carykh video used)\n"
-)
-if c_input == "":
-    c_input = "250"
+if "debug_number_creatures" in sim_config:
+    c_input = sim_config["debug_number_creatures"]
+else:
+    c_input = input(
+        "How many creatures do you want?\n100: Lightweight\n250: Standard (if you don't type anything, I'll go with this)\n500: Strenuous (this is what my carykh video used)\n"
+    )
+    if c_input == "":
+        c_input = "250"
 
 
 sim: Sim = Sim(creature_count=int(c_input), config=sim_config)
