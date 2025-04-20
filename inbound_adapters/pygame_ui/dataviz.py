@@ -17,7 +17,7 @@ def draw_all_graphs(sim, ui) -> None:
     draw_line_graph(
         sim.percentiles, ui.graph, [70, 0, 30, 30], sim.units_per_meter, ui.small_font
     )
-    draw_sac(sim.species_pops, ui.sac, [70, 0], ui)
+    draw_species_area_chart(sim.species_pops, ui.species_area_chart, [70, 0], ui)
     draw_gene_graph(
         sim.species_info, sim.prominent_species, ui.gene_graph, sim, ui, ui.tiny_font
     )
@@ -96,7 +96,7 @@ def draw_line_graph(data, graph, margins, u, font) -> None:
             pygame.draw.line(graph, color, (x1, y1), (x2, y2), width=thickness)
 
 
-def draw_sac(data, sac, margins, ui) -> None:
+def draw_species_area_chart(data, sac, margins, ui) -> None:
     sac.fill((0, 0, 0))
     for g in range(len(data)):
         scan_down_trapezoids(data, g, sac, margins, ui)
@@ -201,7 +201,7 @@ def display_all_graphs(screen, sim, ui) -> None:
 
 def blit_graphsand_marks(screen, sim, ui):
     screen.blit(ui.graph, ui.graph_coor[0:2])
-    screen.blit(ui.sac, ui.sac_coor[0:2])
+    screen.blit(ui.species_area_chart, ui.species_area_chart_coor[0:2])
 
     a = int(ui.gen_slider.val)
     b = int(ui.gen_slider.val_max)
@@ -211,7 +211,7 @@ def blit_graphsand_marks(screen, sim, ui):
 
     if a < b:
         frac = (a + 1) / b
-        line_x = ui.sac_coor[0] + 70 + (ui.graph.get_width() - 70) * frac
+        line_x = ui.species_area_chart_coor[0] + 70 + (ui.graph.get_width() - 70) * frac
         line_ys = [[50, 550], [560, 860]]
         for lineY in line_ys:
             pygame.draw.line(
@@ -219,7 +219,7 @@ def blit_graphsand_marks(screen, sim, ui):
             )
 
     frac = (a2 + 1) / b
-    line_x = ui.sac_coor[0] + 70 + (ui.graph.get_width() - 70) * frac
+    line_x = ui.species_area_chart_coor[0] + 70 + (ui.graph.get_width() - 70) * frac
     median = sim.percentiles[a2][50]
     right_text(
         screen,

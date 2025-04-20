@@ -52,8 +52,10 @@ class UI:
 
         self.graph_coor: list[int] = config.get("graph_coor")
         self.graph = pygame.Surface(self.graph_coor[2:4], pygame.SRCALPHA, 32)
-        self.sac_coor: list[int] = config.get("sac_coor")
-        self.sac = pygame.Surface(self.sac_coor[2:4], pygame.SRCALPHA, 32)
+        self.species_area_chart_coor: list[int] = config.get("species_area_chart_coor")
+        self.species_area_chart = pygame.Surface(
+            self.species_area_chart_coor[2:4], pygame.SRCALPHA, 32
+        )
         self.genealogy_coor: list = config.get("genealogy_coor")
         self.gene_graph: Surface = pygame.Surface(
             self.genealogy_coor[2:4], pygame.SRCALPHA, 32
