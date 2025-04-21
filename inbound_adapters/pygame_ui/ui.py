@@ -189,7 +189,7 @@ class UI:
         self.button_list.append(self.sample_button)
 
         self.do_gen_button = Button(
-            button_coor[4], ["Do a generation"], self.sim.do_generation
+            button_coor[4], ["Do a generation"], self.do_generation
         )
         self.button_list.append(self.do_gen_button)
 
@@ -639,7 +639,7 @@ class UI:
                         self.detect_mouse_motion()
 
                 elif event.key == 13:  # pressing Enter
-                    self.sim.do_generation(None)
+                    self.sim.do_generation()
 
                 elif event.key == 113:  # pressing 'Q'
                     self.show_creatures_button.time_of_last_click = time.time()
@@ -768,6 +768,9 @@ class UI:
 
     def toggle_style(self, button):
         self.draw_creature_mosaic(self.gen_slider.val)
+
+    def do_generation(self, button):
+        self.sim.do_generation()
 
     def do_nothing(self, button):
         pass
