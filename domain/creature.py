@@ -26,8 +26,6 @@ class Creature:
         self.species = self.get_species(parent_species)
         # TODO: This probably smells
         self.sim = _sim
-        # TODO: This smells
-        self.ui = _ui
         self.codon_with_change = None
         # TODO: Prepping for inversion of parent and child
         self.ui_creature = UiCreature(self, _ui)
@@ -37,28 +35,6 @@ class Creature:
             return self.id_number
         else:
             return parent_species
-
-    def draw_cell(self, surface, node_state, frame, transform, x, y) -> None:
-        self.ui_creature.draw_cell(surface, node_state, frame, transform, x, y)
-
-    def draw_environment(self, surface, transform) -> None:
-        self.ui_creature.draw_environment(surface, transform)
-
-    def draw_creature(
-        self,
-        surface,
-        node_state,
-        frame,
-        transform,
-        draw_labels: bool,
-        should_draw_clock: bool,
-    ):
-        self.ui_creature.draw_creature(
-            surface, node_state, frame, transform, draw_labels, should_draw_clock
-        )
-
-    def draw_icon(self, icon_dim, bg_color, beat_fade_time: int) -> Surface:
-        return self.ui_creature.draw_icon(icon_dim, bg_color, beat_fade_time)
 
     def save_calm_state(self, arr):
         self.calmState = arr
@@ -94,6 +70,3 @@ class Creature:
                     result[big_mut_loc + i] = 0.5
 
         return result, new_species, big_mut_loc
-
-    def traits_to_color(self, dna, x, y, frame):
-        return self.ui_creature.traits_to_color(dna, x, y, frame)

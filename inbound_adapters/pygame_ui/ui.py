@@ -164,7 +164,9 @@ class UI:
     def draw_creature_icons(self, gen, creature_count, creatures):
         for c in range(creature_count):
             for i in range(2):
-                creatures[gen][c].ui_creature.icons[i] = creatures[gen][c].draw_icon(
+                creatures[gen][c].ui_creature.icons[i] = creatures[gen][
+                    c
+                ].ui_creature.draw_icon(
                     self.icon_dim[i], Color.MOSAIC, self.beat_fade_time
                 )
 
@@ -557,7 +559,9 @@ class UI:
                 index = self.sim.rankings[gen][r_i]
                 creature = self.sim.creatures[gen][index]
                 dim = (self.preview_locations[r][2], self.preview_locations[r][3])
-                preview = creature.draw_icon(dim, Color.MOSAIC, self.sim.beat_fade_time)
+                preview = creature.ui_creature.draw_icon(
+                    dim, Color.MOSAIC, self.sim.beat_fade_time
+                )
                 center_text(
                     preview,
                     f"{names[r]} creature",
@@ -607,7 +611,7 @@ class UI:
 
                 average_x = np.mean(node_arr[:, :, :, 0])
                 transform = [dim[0] / 2 - average_x * s, dim[1] * 0.8, s]
-                self.creature_highlight[i].draw_creature(
+                self.creature_highlight[i].ui_creature.draw_creature(
                     self.movie_screens[i],
                     node_arr[0],
                     current_frame,

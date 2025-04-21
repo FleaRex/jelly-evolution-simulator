@@ -23,7 +23,7 @@ class UiCreature:
 
     def draw_cell(self, surface, node_state, frame, transform, x, y) -> None:
         tx, ty, s = transform
-        color = self.creature.traits_to_color(self.creature.dna, x, y, frame)
+        color = self.traits_to_color(self.creature.dna, x, y, frame)
         points = []
         for p in range(4):
             px = x
