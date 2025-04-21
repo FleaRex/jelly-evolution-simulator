@@ -1,3 +1,5 @@
+import traceback
+
 import numpy as np
 
 from enums import Color

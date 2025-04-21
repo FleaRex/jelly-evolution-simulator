@@ -68,6 +68,8 @@ class UI:
         self.cm_margin_1: int = config.get("cm_margin_1")
         self.cm_margin_2: int = config.get("cm_margin_2")
 
+        self.beat_fade_time: int = config.get("beat_fade_time")
+
         self.mosaic_screen_width: int = self.window_width - self.cm_margin_1 * 2
         self.mosaic_screen_width_creatures: int = (
             self.mosaic_screen_width - self.info_w - self.column_margin
@@ -144,6 +146,27 @@ class UI:
         self.sample_button: Button = Optional[Button]
         self.do_gen_button: Button = Optional[Button]
         self.alap_button: Button = Optional[Button]
+
+    def setup(self, creatures, count):
+        # TODO: Smells having control of the non_ui creatures
+        self.draw_creature_icons(0, count, creatures)
+        self.draw_creature_mosaic(0)
+
+    def update(self, gen, creatures, creature_count):
+        # TODO: This smells
+        draw_all_graphs(self.sim, self)
+        self.draw_creature_icons(gen + 1, creature_count, creatures)
+        self.gen_slider.val_max = gen + 1
+        self.gen_slider.manual_update(gen)
+        self.creature_location_highlight = [None, None, None]
+        self.detect_mouse_motion()
+
+    def draw_creature_icons(self, gen, creature_count, creatures):
+        for c in range(creature_count):
+            for i in range(2):
+                creatures[gen][c].icons[i] = creatures[gen][c].draw_icon(
+                    self.icon_dim[i], Color.MOSAIC, self.beat_fade_time
+                )
 
     def add_buttons_and_sliders(self):
         self.gen_slider: Slider = Slider(

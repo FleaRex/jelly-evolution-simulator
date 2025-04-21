@@ -4,7 +4,6 @@ from application.species_info import SpeciesInfo
 from enums import Color
 from utils import apply_muscles
 from domain.creature import Creature
-from inbound_adapters.pygame_ui.dataviz import draw_all_graphs
 import time
 import random
 
@@ -79,7 +78,7 @@ class Sim:
         # be holding onto potential energy (e.g. compressed springs)
         self.set_calm_states(0, 0, self.creature_count, self.stabilization_time)
 
-        self.setup_ui(self.creatures, self.creature_count)
+        self.ui.setup(self.creatures, self.creature_count)
 
     def do_generation(self):
         generation_start_time = (
@@ -163,23 +162,9 @@ class Sim:
 
         self.set_calm_states(gen + 1, 0, self.creature_count, self.stabilization_time)
 
-        self.update_ui(gen, self.creatures, self.creature_count)
+        self.ui.update(gen, self.creatures, self.creature_count)
 
         self.last_gen_run_time = time.time() - generation_start_time
-
-    def setup_ui(self, creatures, count):
-        # TODO: This smells
-        self.draw_creature_icons(0, count, creatures)
-        self.ui.draw_creature_mosaic(0)
-
-    def update_ui(self, gen, creatures, creature_count):
-        # TODO: This smells
-        draw_all_graphs(self, self.ui)
-        self.draw_creature_icons(gen + 1, creature_count, creatures)
-        self.ui.gen_slider.val_max = gen + 1
-        self.ui.gen_slider.manual_update(gen)
-        self.ui.creature_location_highlight = [None, None, None]
-        self.ui.detect_mouse_motion()
 
     def draw_creature_icons(self, gen, creature_count, creatures):
         for c in range(creature_count):
