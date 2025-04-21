@@ -2,6 +2,7 @@ import pygame
 from pygame import Surface
 
 from enums import Color
+from inbound_adapters.pygame_ui.ui_creature import UiCreature
 from utils import array_lerp, dist_to_text, species_to_color, list_lerp, lerp
 from inbound_adapters.pygame_ui.shapes import (
     draw_rect,
@@ -18,9 +19,6 @@ class Creature:
     def __init__(self, d, p_id_number, parent_species, _sim, _ui) -> None:
         self.dna = d
         self.calmState = None
-        self.icons = [None] * 2
-        # TODO: This definitely smells
-        self.icon_coor = None
         self.id_number = p_id_number
         self.fitness = None
         self.rank = None
@@ -31,6 +29,8 @@ class Creature:
         # TODO: This smells
         self.ui = _ui
         self.codon_with_change = None
+        # TODO: Prepping for inversion of parent and child
+        self.ui_creature = UiCreature(self, _ui)
 
     def get_species(self, parent_species):
         if parent_species == -1:

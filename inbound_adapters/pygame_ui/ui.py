@@ -164,7 +164,7 @@ class UI:
     def draw_creature_icons(self, gen, creature_count, creatures):
         for c in range(creature_count):
             for i in range(2):
-                creatures[gen][c].icons[i] = creatures[gen][c].draw_icon(
+                creatures[gen][c].ui_creature.icons[i] = creatures[gen][c].draw_icon(
                     self.icon_dim[i], Color.MOSAIC, self.beat_fade_time
                 )
 
@@ -350,24 +350,26 @@ class UI:
             y = i // dim
             creature = self.sim.creatures[gen][c]
             spacing = self.mosaic_screen_width_creatures / dim
-            creature.icon_coor = (
+            creature.ui_creature.icon_coor = (
                 x * spacing + self.cm_margin_2,
                 y * spacing + self.cm_margin_2,
                 spacing,
                 spacing,
             )
-            if creature.icon_coor[1] < self.mosaic_screen.get_height():
+            if creature.ui_creature.icon_coor[1] < self.mosaic_screen.get_height():
                 s = self.style_button.setting
                 if s <= 1:
-                    self.mosaic_screen.blit(creature.icons[s], creature.icon_coor)
+                    self.mosaic_screen.blit(
+                        creature.ui_creature.icons[s], creature.ui_creature.icon_coor
+                    )
                 elif s == 2:
                     extra = 1
                     pygame.draw.rect(
                         self.mosaic_screen,
                         species_to_color(creature.species, self),
                         (
-                            creature.icon_coor[0],
-                            creature.icon_coor[1],
+                            creature.ui_creature.icon_coor[0],
+                            creature.ui_creature.icon_coor[1],
                             spacing + extra,
                             spacing + extra,
                         ),
@@ -375,7 +377,7 @@ class UI:
                 if not creature.living and self.show_xs:
                     color = (255, 0, 0) if s <= 1 else (0, 0, 0)
                     draw_x(
-                        creature.icon_coor,
+                        creature.ui_creature.icon_coor,
                         self.icon_dim[s][0],
                         color,
                         self.mosaic_screen,
@@ -753,7 +755,7 @@ class UI:
         else:
             coor = self.sim.creatures[gen][
                 self.creature_location_highlight[1]
-            ].icon_coor
+            ].ui_creature.icon_coor
             x = coor[0] + self.cm_margin_1
             y = coor[1] + self.cm_margin_1
             self.screen.blit(draw_ring_light(coor[2], coor[3], 6), (x, y))

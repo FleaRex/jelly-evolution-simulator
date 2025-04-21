@@ -163,7 +163,7 @@ def draw_species_circle(
     center_text(screen, name, cx, cy - 22, (0, 0, 0), font)
 
     creature = sim.get_creature_with_id(info.reps[2])
-    tiny_icon = pygame.transform.scale(creature.icons[0], (50, 50))
+    tiny_icon = pygame.transform.scale(creature.ui_creature.icons[0], (50, 50))
     screen.blit(tiny_icon, (cx - 25, cy - 11))
 
     if should_draw_arrow:
