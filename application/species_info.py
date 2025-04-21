@@ -4,7 +4,6 @@ import math
 from domain.creature import Creature
 
 
-# CHECK
 class SpeciesInfo:
     def __init__(self, _sim, creature: Creature, ancestor: Creature) -> None:
         self.sim = _sim
@@ -31,6 +30,7 @@ class SpeciesInfo:
         # TODO: This smells
         self.coor = None
 
+    # TODO: There's an argument this should be in UI
     def become_prominent(
         self,
     ):  # if you are prominent, all your ancestors become prominent.

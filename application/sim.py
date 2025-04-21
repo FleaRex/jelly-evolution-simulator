@@ -9,8 +9,8 @@ import time
 import random
 
 
-# CHECK
 class Sim:
+    # TODO: Would prefer this to not come from config
     def __init__(self, creature_count: int, config: dict) -> None:
         self._creature_count: int = creature_count  # creature count
         self.species_count: int = creature_count  # species count
@@ -19,7 +19,7 @@ class Sim:
         self.beat_time: int = config.get("beat_time")
         self.beat_fade_time: int = config.get("beat_fade_time")
         self.c_dim: list[int] = config.get("c_dim")
-        self.CW, self.CH = self.c_dim
+        self.width, self.height = self.c_dim
         self.beats_per_cycle: int = config.get("beats_per_cycle")
         self.node_coor_count: int = config.get("node_coor_count")
         self.y_clips: list[int] = config.get("y_clips")
@@ -32,7 +32,7 @@ class Sim:
         self.traits_per_box: int = config.get("traits_per_box")
         self.traits_extra: int = config.get("traits_extra")
         self.trait_count = (
-            self.CW * self.CH * self.beats_per_cycle * self.traits_per_box
+            self.width * self.height * self.beats_per_cycle * self.traits_per_box
             + self.traits_extra
         )
 
@@ -55,6 +55,7 @@ class Sim:
         self.species_pops: list = []
         self.species_info: list = []
         self.prominent_species: list = []
+        # TODO: This smells
         self.ui = None
         self.last_gen_run_time: int = -1
 
@@ -72,6 +73,7 @@ class Sim:
             0, 0, self.creature_count, self.stabilization_time
         )  # Calm the creatures down so no potential energy is stored
 
+        # TODO: This smells
         for c in range(self.creature_count):
             for i in range(2):
                 self.creatures[0][c].icons[i] = self.creatures[0][c].draw_icon(
@@ -101,11 +103,11 @@ class Sim:
 
     def get_starting_node_coor(self, gen, start_index, end_index, from_calm_state):
         count = end_index - start_index
-        n = np.zeros((count, self.CH + 1, self.CW + 1, self.node_coor_count))
+        n = np.zeros((count, self.height + 1, self.width + 1, self.node_coor_count))
 
         if not from_calm_state or self.creatures[gen][0].calmState is None:
             # create grid of nodes along perfect gridlines
-            coor_grid = np.mgrid[0 : self.CW + 1, 0 : self.CH + 1]
+            coor_grid = np.mgrid[0 : self.width + 1, 0 : self.height + 1]
             coor_grid = np.swapaxes(np.swapaxes(coor_grid, 0, 1), 1, 2)
             n[:, :, :, 0:2] = coor_grid
 
@@ -115,22 +117,30 @@ class Sim:
                 n[c - start_index, :, :, :] = self.creatures[gen][c].calmState
                 n[
                     c - start_index, :, :, 1
-                ] -= self.CH  # lift the creature above ground level
+                ] -= self.height  # lift the creature above ground level
 
         return n
 
     def get_muscle_array(self, gen, start_index, end_index):
         count = end_index - start_index
         m = np.zeros(
-            (count, self.CH, self.CW, self.beats_per_cycle, self.traits_per_box + 1)
+            (
+                count,
+                self.height,
+                self.width,
+                self.beats_per_cycle,
+                self.traits_per_box + 1,
+            )
         )  # add one trait for diagonal length.
-        dna_len = self.CH * self.CW * self.beats_per_cycle * self.traits_per_box
+        dna_len = self.height * self.width * self.beats_per_cycle * self.traits_per_box
 
         for c in range(start_index, end_index):
             dna = (
                 self.creatures[gen][c]
                 .dna[0:dna_len]
-                .reshape(self.CH, self.CW, self.beats_per_cycle, self.traits_per_box)
+                .reshape(
+                    self.height, self.width, self.beats_per_cycle, self.traits_per_box
+                )
             )
             m[c - start_index, :, :, :, : self.traits_per_box] = 1.0 + dna / 3.0
 

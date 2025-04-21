@@ -579,7 +579,7 @@ class UI:
                 self.movie_screens[i] = pygame.Surface(dim, pygame.SRCALPHA, 32)
 
                 node_arr, _, current_frame = self.visual_sim_memory[i]
-                s = dim[0] / (self.sim.CW + 2) * 0.5  # visual transform scale
+                s = dim[0] / (self.sim.width + 2) * 0.5  # visual transform scale
 
                 average_x = np.mean(node_arr[:, :, :, 0])
                 transform = [dim[0] / 2 - average_x * s, dim[1] * 0.8, s]
