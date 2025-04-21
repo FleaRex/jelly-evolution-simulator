@@ -90,7 +90,8 @@ class Sim:
 
         self.ui.draw_creature_mosaic(0)
 
-    def do_generation(self):
+    # TODO: This shouldn't know about buttons
+    def do_generation(self, _button):
         generation_start_time = (
             time.time()
         )  # calculates how long each generation takes to run
@@ -334,7 +335,7 @@ class Sim:
 
     def check_alap(self) -> None:
         if self.ui.alap_button.setting == 1:  # We're already ALAP-ing!
-            self.do_generation()
+            self.do_generation(None)
 
     def get_creature_with_id(self, creature_id):
         return self.creatures[creature_id // self.creature_count][
