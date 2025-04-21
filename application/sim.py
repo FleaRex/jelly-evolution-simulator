@@ -166,13 +166,6 @@ class Sim:
 
         self.last_gen_run_time = time.time() - generation_start_time
 
-    def draw_creature_icons(self, gen, creature_count, creatures):
-        for c in range(creature_count):
-            for i in range(2):
-                creatures[gen][c].icons[i] = creatures[gen][c].draw_icon(
-                    self.ui.icon_dim[i], Color.MOSAIC, self.beat_fade_time
-                )
-
     def create_new_creature(self, creature_id) -> Creature:
         dna = np.clip(np.random.normal(0.0, 1.0, self.trait_count), -3, 3)
         return Creature(dna, creature_id, -1, self, self.ui)

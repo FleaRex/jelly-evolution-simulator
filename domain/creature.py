@@ -42,13 +42,15 @@ class Creature:
     def draw_cell(self, surface, node_state, frame, transform, x, y) -> None:
         tx, ty, s = transform
         color = self.traits_to_color(self.dna, x, y, frame)
-        points = [None] * 4
+        points = []
         for p in range(4):
             px = x
             if p == 1 or p == 2:
                 px += 1
             py = y + p // 2
-            points[p] = [tx + node_state[px, py, 0] * s, ty + node_state[px, py, 1] * s]
+            points.append(
+                [tx + node_state[px, py, 0] * s, ty + node_state[px, py, 1] * s]
+            )
 
         pygame.draw.polygon(surface, color, points)
 
@@ -115,12 +117,12 @@ class Creature:
                 self.ui.small_font,
             )
 
-            ratio = 1 - frame / self.sim.trial_time
+        ratio = 1 - frame / self.sim.trial_time
 
         if should_draw_clock:
             draw_clock(
                 surface,
-                [40, 40, 32],
+                (40, 40, 32),
                 ratio,
                 str(math.ceil(ratio * self.sim.trial_time / self.ui.fps)),
                 self.ui.small_font,
@@ -172,7 +174,9 @@ class Creature:
                     delta = np.random.normal(0.0, 1.0, 1)
                 result[big_mut_loc + i] += delta
 
-                # Cells that endure a big mutation are also required to be at least somewhat rigid, because if a cell goes from super-short to super-tall but has low rigidity the whole time, then it doesn't really matter.
+                # Cells that endure a big mutation are also required to be at least somewhat rigid,
+                # because if a cell goes from super-short to super-tall but has low rigidity the whole time,
+                # then it doesn't really matter.
                 if i == 2 and result[big_mut_loc + i] < 0.5:
                     result[big_mut_loc + i] = 0.5
 
