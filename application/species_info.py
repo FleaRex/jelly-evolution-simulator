@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 import math
 
@@ -5,7 +7,9 @@ from domain.creature import Creature
 
 
 class SpeciesInfo:
-    def __init__(self, _sim, creature: Creature, ancestor: Creature) -> None:
+    def __init__(
+        self, _sim, creature: Optional[Creature], ancestor: Optional[Creature]
+    ) -> None:
         self.sim = _sim
         self.species_id = creature.species
         self.ancestor_id = None

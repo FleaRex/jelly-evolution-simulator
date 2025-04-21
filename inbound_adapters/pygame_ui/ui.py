@@ -315,7 +315,6 @@ class UI:
 
     def draw_creature_mosaic(self, gen) -> None:
         self.mosaic_screen.fill(Color.MOSAIC)
-
         for c in range(self.sim.creature_count):
             i = c
             if self.sim.creatures[gen][c].rank is not None:

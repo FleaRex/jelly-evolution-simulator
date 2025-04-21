@@ -57,7 +57,7 @@ class Sim:
             100  # change this if you want to change the resolution of the percentile-tracking
         )
         self.units_per_meter: float = config.get("units_per_meter")
-        self.creatures = None
+        self.creatures = []
         self.rankings = np.zeros((0, self.creature_count), dtype=int)
         self.percentiles = np.zeros((0, self.HUNDRED + 1))
         self.species_pops: list = []
@@ -77,18 +77,9 @@ class Sim:
         # We want to make sure that all creatures, even in their
         # initial state, are in calm equilibrium. They shouldn't
         # be holding onto potential energy (e.g. compressed springs)
-        self.set_calm_states(
-            0, 0, self.creature_count, self.stabilization_time
-        )  # Calm the creatures down so no potential energy is stored
+        self.set_calm_states(0, 0, self.creature_count, self.stabilization_time)
 
-        # TODO: This smells
-        for c in range(self.creature_count):
-            for i in range(2):
-                self.creatures[0][c].icons[i] = self.creatures[0][c].draw_icon(
-                    self.ui.icon_dim[i], Color.MOSAIC, self.beat_fade_time
-                )
-
-        self.ui.draw_creature_mosaic(0)
+        self.setup_ui(self.creatures, self.creature_count)
 
     def do_generation(self):
         generation_start_time = (
@@ -172,21 +163,30 @@ class Sim:
 
         self.set_calm_states(gen + 1, 0, self.creature_count, self.stabilization_time)
 
+        self.update_ui(gen, self.creatures, self.creature_count)
+
+        self.last_gen_run_time = time.time() - generation_start_time
+
+    def setup_ui(self, creatures, count):
+        # TODO: This smells
+        self.draw_creature_icons(0, count, creatures)
+        self.ui.draw_creature_mosaic(0)
+
+    def update_ui(self, gen, creatures, creature_count):
+        # TODO: This smells
         draw_all_graphs(self, self.ui)
-
-        for c in range(self.creature_count):
-            for i in range(2):
-                self.creatures[gen + 1][c].icons[i] = self.creatures[gen + 1][
-                    c
-                ].draw_icon(self.ui.icon_dim[i], Color.MOSAIC, self.beat_fade_time)
-
+        self.draw_creature_icons(gen + 1, creature_count, creatures)
         self.ui.gen_slider.val_max = gen + 1
         self.ui.gen_slider.manual_update(gen)
-
         self.ui.creature_location_highlight = [None, None, None]
         self.ui.detect_mouse_motion()
 
-        self.last_gen_run_time = time.time() - generation_start_time
+    def draw_creature_icons(self, gen, creature_count, creatures):
+        for c in range(creature_count):
+            for i in range(2):
+                creatures[gen][c].icons[i] = creatures[gen][c].draw_icon(
+                    self.ui.icon_dim[i], Color.MOSAIC, self.beat_fade_time
+                )
 
     def create_new_creature(self, creature_id) -> Creature:
         dna = np.clip(np.random.normal(0.0, 1.0, self.trait_count), -3, 3)
