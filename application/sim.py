@@ -11,6 +11,14 @@ import random
 
 class Sim:
     # TODO: Would prefer this to not come from config
+    @property
+    def creature_count(self):
+        return self._creature_count
+
+    @creature_count.setter
+    def creature_count(self, value: int):
+        self._creature_count = value
+
     def __init__(self, creature_count: int, config: dict) -> None:
         self._creature_count: int = creature_count  # creature count
         self.species_count: int = creature_count  # species count
@@ -82,13 +90,103 @@ class Sim:
 
         self.ui.draw_creature_mosaic(0)
 
-    @property
-    def creature_count(self):
-        return self._creature_count
+    def do_generation(self):
+        generation_start_time = (
+            time.time()
+        )  # calculates how long each generation takes to run
 
-    @creature_count.setter
-    def creature_count(self, value: int):
-        self._creature_count = value
+        gen = len(self.creatures) - 1
+        creature_state = self.simulate_import(gen, 0, self.creature_count, True)
+        node_coor, muscles, _ = self.simulate_run(
+            creature_state, self.trial_time, False
+        )
+        final_scores = node_coor[:, :, :, 0].mean(
+            axis=(1, 2)
+        )  # find each creature's average X-coordinate
+
+        # Tallying up all the data
+        curr_rankings = np.flip(np.argsort(final_scores), axis=0)
+        new_percentiles = np.zeros((self.HUNDRED + 1))
+        new_species_pops = {}
+        best_of_each_species = {}
+
+        for rank in range(self.creature_count):
+            c = curr_rankings[rank]
+            self.creatures[gen][c].fitness = final_scores[c]
+            self.creatures[gen][c].rank = rank
+
+            species = self.creatures[gen][c].species
+            if species in new_species_pops:
+                new_species_pops[species][0] += 1
+            else:
+                new_species_pops[species] = [1, None, None]
+            if species not in best_of_each_species:
+                best_of_each_species[species] = self.creatures[gen][c].id_number
+
+        self.do_species_info(new_species_pops, best_of_each_species)
+
+        for p in range(self.HUNDRED + 1):
+            rank = min(
+                int(self.creature_count * p / self.HUNDRED), self.creature_count - 1
+            )
+            c = curr_rankings[rank]
+            new_percentiles[p] = self.creatures[gen][c].fitness
+
+        next_creatures = [None] * self.creature_count
+
+        for rank in range(self.creature_count // 2):
+            winner = curr_rankings[rank]
+            loser = curr_rankings[(self.creature_count - 1) - rank]
+            if random.uniform(0, 1) < rank / self.creature_count:
+                ph = loser
+                loser = winner
+                winner = ph
+
+            next_creatures[winner] = None
+            if (
+                random.uniform(0, 1) < rank / self.creature_count * 2.0
+            ):  # A 1st place finisher is guaranteed to make a clone, but as we get closer to the middle the odds get more likely we just get 2 mutants.
+                next_creatures[winner] = self.mutate(
+                    self.creatures[gen][winner],
+                    (gen + 1) * self.creature_count + winner,
+                )
+            else:
+                next_creatures[winner] = self.clone(
+                    self.creatures[gen][winner],
+                    (gen + 1) * self.creature_count + winner,
+                )
+
+            next_creatures[loser] = self.mutate(
+                self.creatures[gen][winner], (gen + 1) * self.creature_count + loser
+            )
+            self.creatures[gen][loser].living = False
+
+        self.creatures.append(next_creatures)
+        self.rankings = np.append(
+            self.rankings, curr_rankings.reshape((1, self.creature_count)), axis=0
+        )
+        self.percentiles = np.append(
+            self.percentiles, new_percentiles.reshape((1, self.HUNDRED + 1)), axis=0
+        )
+        self.species_pops.append(new_species_pops)
+
+        self.set_calm_states(gen + 1, 0, self.creature_count, self.stabilization_time)
+
+        draw_all_graphs(self, self.ui)
+
+        for c in range(self.creature_count):
+            for i in range(2):
+                self.creatures[gen + 1][c].icons[i] = self.creatures[gen + 1][
+                    c
+                ].draw_icon(self.ui.icon_dim[i], Color.MOSAIC, self.beat_fade_time)
+
+        self.ui.gen_slider.val_max = gen + 1
+        self.ui.gen_slider.manual_update(gen)
+
+        self.ui.creature_location_highlight = [None, None, None]
+        self.ui.detect_mouse_motion()
+
+        self.last_gen_run_time = time.time() - generation_start_time
 
     def create_new_creature(self, creature_id) -> Creature:
         dna = np.clip(np.random.normal(0.0, 1.0, self.trait_count), -3, 3)
@@ -237,104 +335,6 @@ class Sim:
     def check_alap(self) -> None:
         if self.ui.alap_button.setting == 1:  # We're already ALAP-ing!
             self.do_generation()
-
-    def do_generation(self):
-        generation_start_time = (
-            time.time()
-        )  # calculates how long each generation takes to run
-
-        gen = len(self.creatures) - 1
-        creature_state = self.simulate_import(gen, 0, self.creature_count, True)
-        node_coor, muscles, _ = self.simulate_run(
-            creature_state, self.trial_time, False
-        )
-        final_scores = node_coor[:, :, :, 0].mean(
-            axis=(1, 2)
-        )  # find each creature's average X-coordinate
-
-        # Tallying up all the data
-        curr_rankings = np.flip(np.argsort(final_scores), axis=0)
-        new_percentiles = np.zeros((self.HUNDRED + 1))
-        new_species_pops = {}
-        best_of_each_species = {}
-
-        for rank in range(self.creature_count):
-            c = curr_rankings[rank]
-            self.creatures[gen][c].fitness = final_scores[c]
-            self.creatures[gen][c].rank = rank
-
-            species = self.creatures[gen][c].species
-            if species in new_species_pops:
-                new_species_pops[species][0] += 1
-            else:
-                new_species_pops[species] = [1, None, None]
-            if species not in best_of_each_species:
-                best_of_each_species[species] = self.creatures[gen][c].id_number
-
-        self.do_species_info(new_species_pops, best_of_each_species)
-
-        for p in range(self.HUNDRED + 1):
-            rank = min(
-                int(self.creature_count * p / self.HUNDRED), self.creature_count - 1
-            )
-            c = curr_rankings[rank]
-            new_percentiles[p] = self.creatures[gen][c].fitness
-
-        next_creatures = [None] * self.creature_count
-
-        for rank in range(self.creature_count // 2):
-            winner = curr_rankings[rank]
-            loser = curr_rankings[(self.creature_count - 1) - rank]
-            if random.uniform(0, 1) < rank / self.creature_count:
-                ph = loser
-                loser = winner
-                winner = ph
-
-            next_creatures[winner] = None
-            if (
-                random.uniform(0, 1) < rank / self.creature_count * 2.0
-            ):  # A 1st place finisher is guaranteed to make a clone, but as we get closer to the middle the odds get more likely we just get 2 mutants.
-                next_creatures[winner] = self.mutate(
-                    self.creatures[gen][winner],
-                    (gen + 1) * self.creature_count + winner,
-                )
-            else:
-                next_creatures[winner] = self.clone(
-                    self.creatures[gen][winner],
-                    (gen + 1) * self.creature_count + winner,
-                )
-
-            next_creatures[loser] = self.mutate(
-                self.creatures[gen][winner], (gen + 1) * self.creature_count + loser
-            )
-            self.creatures[gen][loser].living = False
-
-        self.creatures.append(next_creatures)
-        self.rankings = np.append(
-            self.rankings, curr_rankings.reshape((1, self.creature_count)), axis=0
-        )
-        self.percentiles = np.append(
-            self.percentiles, new_percentiles.reshape((1, self.HUNDRED + 1)), axis=0
-        )
-        self.species_pops.append(new_species_pops)
-
-        self.set_calm_states(gen + 1, 0, self.creature_count, self.stabilization_time)
-
-        draw_all_graphs(self, self.ui)
-
-        for c in range(self.creature_count):
-            for i in range(2):
-                self.creatures[gen + 1][c].icons[i] = self.creatures[gen + 1][
-                    c
-                ].draw_icon(self.ui.icon_dim[i], Color.MOSAIC, self.beat_fade_time)
-
-        self.ui.gen_slider.val_max = gen + 1
-        self.ui.gen_slider.manual_update(gen)
-
-        self.ui.creature_location_highlight = [None, None, None]
-        self.ui.detect_mouse_motion()
-
-        self.last_gen_run_time = time.time() - generation_start_time
 
     def get_creature_with_id(self, creature_id):
         return self.creatures[creature_id // self.creature_count][
