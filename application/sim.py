@@ -69,7 +69,7 @@ class Sim:
         # We want to make sure that all creatures, even in their
         # initial state, are in calm equilibrium. They shouldn't
         # be holding onto potential energy (e.g. compressed springs)
-        self.get_calm_states(
+        self.set_calm_states(
             0, 0, self.creature_count, self.stabilization_time
         )  # Calm the creatures down so no potential energy is stored
 
@@ -94,7 +94,8 @@ class Sim:
         dna = np.clip(np.random.normal(0.0, 1.0, self.trait_count), -3, 3)
         return Creature(dna, creature_id, -1, self, self.ui)
 
-    def get_calm_states(self, gen, start_index, end_index, frame_count) -> None:
+    def set_calm_states(self, gen, start_index, end_index, frame_count) -> None:
+        """Calm the creatures down so no potential energy is stored"""
         param = self.simulate_import(gen, start_index, end_index, False)
         node_coor, muscles, _ = self.simulate_run(param, frame_count, True)
 
@@ -235,9 +236,9 @@ class Sim:
 
     def check_alap(self) -> None:
         if self.ui.alap_button.setting == 1:  # We're already ALAP-ing!
-            self.do_generation(self.ui.do_gen_button)
+            self.do_generation()
 
-    def do_generation(self, button):
+    def do_generation(self):
         generation_start_time = (
             time.time()
         )  # calculates how long each generation takes to run
@@ -317,11 +318,9 @@ class Sim:
         )
         self.species_pops.append(new_species_pops)
 
+        self.set_calm_states(gen + 1, 0, self.creature_count, self.stabilization_time)
+
         draw_all_graphs(self, self.ui)
-
-        self.get_calm_states(gen + 1, 0, self.creature_count, self.stabilization_time)
-
-        # Calm the creatures down so no potential energy is stored
 
         for c in range(self.creature_count):
             for i in range(2):
@@ -331,10 +330,11 @@ class Sim:
 
         self.ui.gen_slider.val_max = gen + 1
         self.ui.gen_slider.manual_update(gen)
-        self.last_gen_run_time = time.time() - generation_start_time
 
         self.ui.creature_location_highlight = [None, None, None]
         self.ui.detect_mouse_motion()
+
+        self.last_gen_run_time = time.time() - generation_start_time
 
     def get_creature_with_id(self, creature_id):
         return self.creatures[creature_id // self.creature_count][
