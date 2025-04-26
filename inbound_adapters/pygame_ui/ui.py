@@ -32,7 +32,7 @@ import random
 
 class UI:
     # TODO: Don't get stuff from config here
-    def __init__(self, config: dict):
+    def __init__(self, sim, config: dict):
         self.title: str = config.get("title")
         pygame.display.set_caption(self.title)
         pygame.font.init()
@@ -100,8 +100,7 @@ class UI:
 
         self.visual_sim_memory: list = []
         self.movie_screens: list = []
-        # TODO: Is this sim ok?
-        self.sim = None
+        self.sim = sim
 
         self.screen = pygame.display.set_mode((self.window_width, self.window_height))
         self.mosaic_screen: Surface = pygame.Surface(

@@ -22,10 +22,8 @@ sim: Sim = Sim(creature_count=int(c_input), config=sim_config)
 
 # Cosmetic UI variables
 
-ui: UI = UI(config=ui_config)
-
+ui: UI = UI(sim, config=ui_config)
 sim.ui = ui
-ui.sim = sim
 ui.add_buttons_and_sliders()
 
 sim.initialize_universe()
