@@ -148,19 +148,21 @@ class UI:
 
     def setup(self, creatures, count):
         # TODO: Smells having control of the non_ui creatures
-        self.draw_creature_icons(0, count, creatures)
+        self.draw_creature_icons(0)
         self.draw_creature_mosaic(0)
 
-    def update(self, gen, creatures, creature_count):
+    def update(self, gen):
         # TODO: This smells
         draw_all_graphs(self.sim, self)
-        self.draw_creature_icons(gen + 1, creature_count, creatures)
+        self.draw_creature_icons(gen + 1)
         self.gen_slider.val_max = gen + 1
         self.gen_slider.manual_update(gen)
         self.creature_location_highlight = [None, None, None]
         self.detect_mouse_motion()
 
-    def draw_creature_icons(self, gen, creature_count, creatures):
+    def draw_creature_icons(self, gen):
+        creature_count = self.sim.creature_count
+        creatures = self.sim.creatures
         for c in range(creature_count):
             for i in range(2):
                 creatures[gen][c].ui_creature.icons[i] = creatures[gen][
@@ -804,7 +806,7 @@ class UI:
 
     def do_generation(self, button):
         gen = self.sim.do_generation()
-        self.update(gen, self.sim.creatures, self.sim.creature_count)
+        self.update(gen)
 
     def do_nothing(self, button):
         pass

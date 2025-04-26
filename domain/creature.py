@@ -14,7 +14,6 @@ class Creature:
         self.rank = None
         self.living = True
         self.species = self.get_species(parent_species)
-        # TODO: This probably smells
         self.sim = _sim
         self.codon_with_change = None
         # TODO: Prepping for inversion of parent and child
