@@ -1,18 +1,8 @@
-import pygame
-from pygame import Surface
-
-from enums import Color
-from inbound_adapters.pygame_ui.ui_creature import UiCreature
-from utils import array_lerp, dist_to_text, species_to_color, list_lerp, lerp
-from inbound_adapters.pygame_ui.shapes import (
-    draw_rect,
-    draw_text_rect,
-    center_text,
-    draw_clock,
-)
-import numpy as np
-import math
 import random
+
+import numpy as np
+
+from inbound_adapters.pygame_ui.ui_creature import UiCreature
 
 
 class Creature:

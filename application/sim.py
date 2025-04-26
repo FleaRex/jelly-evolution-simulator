@@ -14,10 +14,6 @@ class Sim:
     def creature_count(self):
         return self._creature_count
 
-    @creature_count.setter
-    def creature_count(self, value: int):
-        self._creature_count = value
-
     def __init__(self, creature_count: int, config: dict) -> None:
         self._creature_count: int = creature_count  # creature count
         self.species_count: int = creature_count  # species count
