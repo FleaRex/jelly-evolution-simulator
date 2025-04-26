@@ -637,6 +637,8 @@ class UI:
     def detect_events(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE or event.key == 27:
+                    self.running = False
                 new_gen = None
                 if event.key == pygame.K_LEFT:
                     new_gen = max(0, self.gen_slider.val - 1)

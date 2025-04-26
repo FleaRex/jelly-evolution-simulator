@@ -27,6 +27,8 @@ sim.ui = ui
 ui.add_buttons_and_sliders()
 
 sim.initialize_universe()
+ui.setup(sim.creatures, sim.creature_count)
+
 
 while ui.running:
     sim.check_alap()

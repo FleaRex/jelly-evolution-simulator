@@ -74,8 +74,6 @@ class Sim:
         # be holding onto potential energy (e.g. compressed springs)
         self.set_calm_states(0, 0, self.creature_count, self.stabilization_time)
 
-        self.ui.setup(self.creatures, self.creature_count)
-
     def do_generation(self):
         generation_start_time = (
             time.time()
