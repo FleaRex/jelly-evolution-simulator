@@ -156,9 +156,10 @@ class Sim:
 
         self.set_calm_states(gen + 1, 0, self.creature_count, self.stabilization_time)
 
-        self.ui.update(gen, self.creatures, self.creature_count)
-
         self.last_gen_run_time = time.time() - generation_start_time
+
+        # TODO: This should be temporary and is a little dodge to be returning
+        return gen
 
     def create_new_creature(self, creature_id) -> Creature:
         dna = np.clip(np.random.normal(0.0, 1.0, self.trait_count), -3, 3)
@@ -306,7 +307,7 @@ class Sim:
 
     def check_alap(self) -> None:
         if self.ui.alap_button.setting == 1:  # We're already ALAP-ing!
-            self.do_generation()
+            self.ui.do_generation(None)
 
     def get_creature_with_id(self, creature_id):
         return self.creatures[creature_id // self.creature_count][

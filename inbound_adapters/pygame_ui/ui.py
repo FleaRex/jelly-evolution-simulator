@@ -668,7 +668,7 @@ class UI:
                         self.detect_mouse_motion()
 
                 elif event.key == 13:  # pressing Enter
-                    self.sim.do_generation()
+                    self.do_generation(None)
 
                 elif event.key == 113:  # pressing 'Q'
                     self.show_creatures_button.time_of_last_click = time.time()
@@ -799,7 +799,8 @@ class UI:
         self.draw_creature_mosaic(self.gen_slider.val)
 
     def do_generation(self, button):
-        self.sim.do_generation()
+        gen = self.sim.do_generation()
+        self.update(gen, self.sim.creatures, self.sim.creature_count)
 
     def do_nothing(self, button):
         pass
