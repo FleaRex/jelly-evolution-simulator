@@ -31,7 +31,7 @@ ui.setup(sim.creatures, sim.creature_count)
 
 
 while ui.running:
-    sim.check_alap()
+    ui.check_alap()
     ui.detect_mouse_motion()
     ui.detect_events()
     ui.detect_sliders()

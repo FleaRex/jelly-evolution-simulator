@@ -305,10 +305,6 @@ class Sim:
             ):  # prominent threshold
                 info.become_prominent()
 
-    def check_alap(self) -> None:
-        if self.ui.alap_button.setting == 1:  # We're already ALAP-ing!
-            self.ui.do_generation(None)
-
     def get_creature_with_id(self, creature_id):
         return self.creatures[creature_id // self.creature_count][
             creature_id % self.creature_count

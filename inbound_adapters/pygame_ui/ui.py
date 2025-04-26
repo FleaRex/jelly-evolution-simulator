@@ -798,6 +798,10 @@ class UI:
     def toggle_style(self, button):
         self.draw_creature_mosaic(self.gen_slider.val)
 
+    def check_alap(self):
+        if self.alap_button.setting == 1:  # We're already ALAP-ing!
+            self.do_generation(None)
+
     def do_generation(self, button):
         gen = self.sim.do_generation()
         self.update(gen, self.sim.creatures, self.sim.creature_count)
